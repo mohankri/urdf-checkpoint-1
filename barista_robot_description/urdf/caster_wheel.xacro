@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Caster wheel assembly: yaw -> roll -> pitch, mounted to `parent` at
+       x = x_offset. Used for both front and back casters by passing a
+       different `prefix` and `x_offset` (e.g. front: 0.178, back: -0.178).
+       Materials (blue, red, green_dark) must already be defined in the
+       including file. -->
+  <xacro:macro name="caster_wheel" params="prefix parent x_offset">
+
+    <link name="${prefix}_yaw">
+      <visual>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0352"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+
+      <collision>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="0.001" radius="0.0045000000000000005"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <mass value="0.001"/>
+        <inertia ixx="5.145833333333334e-09" ixy="0" ixz="0" iyy="5.145833333333334e-09" iyz="0" izz="1.0125000000000003e-08"/>
+      </inertial>
+    </link>
+
+    <joint name="${prefix}_yaw_joint" type="continuous">
+      <origin rpy="0 0 0" xyz="${x_offset} 0 0"/>
+      <axis xyz="0 0 1"/>
+      <parent link="${parent}"/>
+      <child link="${prefix}_yaw"/>
+      <limit effort="1000.0" velocity="100.0"/>
+      <dynamics damping="0.0" friction="0.1"/>
+    </joint>
+
+    <link name="${prefix}_roll">
+      <visual>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="0.0206" radius="0.0352"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <collision>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="0.001" radius="0.0045000000000000005"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <mass value="0.001"/>
+        <inertia ixx="5.145833333333334e-09" ixy="0" ixz="0" iyy="5.145833333333334e-09" iyz="0" izz="1.0125000000000003e-08"/>
+      </inertial>
+    </link>
+
+    <joint name="${prefix}_roll_joint" type="continuous">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <child link="${prefix}_roll"/>
+      <parent link="${prefix}_yaw"/>
+      <limit effort="1000.0" velocity="100.0"/>
+      <dynamics damping="0.0" friction="0.1"/>
+    </joint>
+
+    <link name="${prefix}_pitch">
+      <visual>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <sphere radius="0.0352"/>
+        </geometry>
+        <material name="green_dark"/>
+      </visual>
+
+      <collision>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <sphere radius="0.010"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <mass value="0.001"/>
+        <inertia ixx="4e-08" ixy="0" ixz="0" iyy="4e-08" iyz="0" izz="4e-08"/>
+      </inertial>
+    </link>
+
+    <joint name="${prefix}_pitch_joint" type="continuous">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <child link="${prefix}_pitch"/>
+      <parent link="${prefix}_roll"/>
+      <limit effort="1000.0" velocity="100.0"/>
+      <dynamics damping="0.0" friction="0.1"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>

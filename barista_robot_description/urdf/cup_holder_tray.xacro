@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find barista_robot_description)/urdf/standoff_rod.xacro" />
+
+  <!-- Cup tray, mounted on top of the standoffs. -->
+  <xacro:macro name="cup_tray" params="parent">
+
+    <link name="cup_tray">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry><cylinder length="0.090" radius="0.160"/></geometry>
+        <material name="blue"/>
+      </visual>
+      <!--
+      <collision>
+        <origin xyz="0 0 0.045" rpy="0 0 0"/>
+        <geometry><box size="0.32 0.18 0.09"/></geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0.045" rpy="0 0 0"/>
+        <mass value="1.5"/>
+        <inertia ixx="0.005" ixy="0.0" ixz="0.0" iyy="0.006" iyz="0.0" izz="0.008"/>
+      </inertial>
+      -->
+    </link>
+
+    <joint name="cup_tray_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="cup_tray"/>
+      <origin xyz="0 0 0.370" rpy="0 0 0"/> <!-- 0.155 (base) + 0.22 (standoff) -->
+    </joint>
+
+  </xacro:macro>
+
+  <!-- Full assembly: four standoffs (front/back x left/right) plus the tray. -->
+  <xacro:macro name="cup_holder_tray" params="parent">
+    <xacro:standoff_rod link_suffix="left_front"  joint_suffix="left_joint_front"  parent="${parent}" x="0.1"  y="0.1"/>
+    <xacro:standoff_rod link_suffix="left_back"   joint_suffix="left_joint_back"   parent="${parent}" x="-0.1" y="0.1"/>
+    <xacro:standoff_rod link_suffix="right_front" joint_suffix="right_joint_front" parent="${parent}" x="0.1"  y="-0.1"/>
+    <xacro:standoff_rod link_suffix="right_back"  joint_suffix="right_joint_back"  parent="${parent}" x="-0.1" y="-0.1"/>
+    <xacro:cup_tray parent="${parent}"/>
+  </xacro:macro>
+
+</robot>

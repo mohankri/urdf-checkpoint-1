@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_box_bot">
+ 
+<xacro:arg name="include_laser" default="true" />
+
+<xacro:include filename="$(find barista_robot_description)/urdf/caster_wheel.xacro" />
+<xacro:include filename="$(find barista_robot_description)/urdf/cup_holder_tray.xacro" />
+<xacro:include filename="$(find barista_robot_description)/urdf/drive_wheel.xacro" />
+<xacro:include filename="$(find barista_robot_description)/urdf/standoff_rod.xacro" />
+
+<xacro:if value="$(arg include_laser)">
+    <xacro:include filename="$(find barista_robot_description)/urdf/laser_scanner.xacro" />
+</xacro:if>
+
+<!-- ============================================================ -->
+<!-- MATERIALS                                                     -->
+<!-- ============================================================ -->
+<material name="blue"> <color rgba="0.0 0.0 1.0 1"/> </material>
+<material name="black"> <color rgba="0.0 0.0 0.0 1"/> </material>
+<material name="white"> <color rgba="1.0 1.0 1.0 1"/> </material>
+<material name="rod_grey"><color rgba="0.6 0.6 0.6 1.0"/> </material>
+<material name="green_dark"> <color rgba="0.0 0.5 0.0 1"/> </material>
+<material name="red"> <color rgba="1.0 0.0 0.0 1"/> </material>
+
+
+<!-- ============================================================ -->
+<!-- BASE / CHASSIS                                                -->
+<!-- ============================================================ -->
+<link name="base_link">
+</link>
+
+<link name="chassis">
+    <visual>
+        <origin xyz="0 0 0.0775" rpy="0 0 0"/>
+        <geometry>
+            <cylinder length="0.155" radius="0.178"/>
+        </geometry>
+        <material name="blue"/>
+    </visual>
+
+    <collision>
+        <geometry>
+            <box size="0.1 0.1 0.1"/>
+        </geometry>
+    </collision>
+
+    <inertial>
+        <mass value="0.5"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <inertia ixx="0.0008333333333333335" ixy="0" ixz="0" iyy="0.0008333333333333335" iyz="0" izz="0.0008333333333333335"/>
+    </inertial>
+</link>
+
+<joint name="base_link_2_chassis" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <parent link="base_link" />
+    <child link="chassis" />
+</joint>
+
+
+<!-- ============================================================ -->
+<!-- COMPONENT INSTANTIATION                                       -->
+<!-- ============================================================ -->
+<xacro:drive_wheels parent="chassis"/>
+<xacro:caster_wheel prefix="front" parent="chassis" x_offset="0.178"/>
+<xacro:caster_wheel prefix="back"  parent="chassis" x_offset="-0.178"/>
+<xacro:cup_holder_tray parent="base_link"/>
+
+<xacro:if value="$(arg include_laser)">
+    <xacro:laser_scanner parent="chassis"/>
+</xacro:if>
+
+
+<!-- ============================================================ -->
+<!-- PLUGINS                                                       -->
+<!-- ============================================================ -->
+
+<!-- Joint State Publisher Plugin -->
+<gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+        <topic>/joint_states</topic>
+        <update_rate>30</update_rate>
+        <joint_name>joint_left_wheel</joint_name>
+        <joint_name>joint_right_wheel</joint_name>
+        <joint_name>front_yaw_joint</joint_name>
+        <joint_name>back_yaw_joint</joint_name>
+        <joint_name>front_roll_joint</joint_name>
+        <joint_name>back_roll_joint</joint_name>
+        <joint_name>front_pitch_joint</joint_name>
+        <joint_name>back_pitch_joint</joint_name>
+    </plugin>
+</gazebo>
+
+<!-- Differential Drive Plugin -->
+<gazebo>
+    <plugin filename="gz-sim-diff-drive-system"
+            name="gz::sim::systems::DiffDrive">
+        <left_joint>joint_left_wheel</left_joint>
+        <right_joint>joint_right_wheel</right_joint>
+        <wheel_separation>0.1</wheel_separation>
+        <wheel_radius>0.035</wheel_radius>
+        <topic>cmd_vel</topic>
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>true</publish_odom_tf>
+        <publish_wheel_tf>true</publish_wheel_tf>
+        <odom_topic>odom</odom_topic>
+        <tf_topic>tf</tf_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_link</child_frame_id>
+    </plugin>
+</gazebo>
+
+<!-- Enable Sensors in Gazebo Sim -->
+<gazebo>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+        <render_engine>ogre2</render_engine>
+    </plugin>
+</gazebo>
+
+</robot>

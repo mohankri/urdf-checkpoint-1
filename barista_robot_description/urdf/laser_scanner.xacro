@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Full laser scanner assembly: a prismatic mount off `parent`, a fixed
+       sensor frame, and a continuously-spinning visual/collision model on
+       top. Includes the ros2_control hardware interface for both actuated
+       joints and the gz gpu_lidar sensor plugin publishing on /scan. -->
+  <xacro:macro name="laser_scanner" params="parent">
+
+    <link name="laser_scan_link">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://barista_robot_description/meshes/sensors/rplidar.dae" scale="1.0 1.0 1.0"/>
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0.0204"/>
+        <geometry>
+          <box size="0.074986 0.074935 0.0408"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <mass value="0.01"/>
+        <origin rpy="0 0 0" xyz="0 0 0.0204"/>
+        <inertia ixx="6.066578520833334e-06" ixy="0" ixz="0" iyy="6.072950163333333e-06" iyz="0" izz="9.365128684166666e-06"/>
+      </inertial>
+    </link>
+
+    <joint name="laser_scan_link_joint" type="prismatic">
+      <origin rpy="0 0 0" xyz="0.160 0 0.155"/>
+      <parent link="${parent}"/>
+      <child link="laser_scan_link"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.1" upper="0.0" effort="20.0" velocity="2.0"/>
+      <dynamics damping="0.1" friction="1.0"/>
+    </joint>
+
+    <link name="laser_scan_frame">
+    </link>
+
+    <joint name="laser_scan_frame_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0.03"/>
+      <parent link="laser_scan_link"/>
+      <child link="laser_scan_frame"/>
+      <axis xyz="0 0 0"/>
+    </joint>
+
+    <link name="laser_scan_model_link">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://barista_robot_description/meshes/sensors/rplidar.dae" scale="1.0 1.0 1.0"/>
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0.0204"/>
+        <geometry>
+          <cylinder length="0.0408" radius="0.037493"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <mass value="0.01"/>
+        <origin rpy="0 0 0" xyz="0 0 0.0204"/>
+        <inertia ixx="6.066578520833334e-06" ixy="0" ixz="0" iyy="6.072950163333333e-06" iyz="0" izz="9.365128684166666e-06"/>
+      </inertial>
+    </link>
+
+    <joint name="laser_scan_model_link_joint" type="continuous">
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <parent link="laser_scan_link"/>
+      <child link="laser_scan_model_link"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="10.0" velocity="2.0"/>
+      <dynamics friction="0.01"/>
+    </joint>
+
+    <!-- ros2_control hardware interface for the two actuated laser joints -->
+    <ros2_control name="GazeboSimSystem" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </hardware>
+
+      <joint name="laser_scan_link_joint">
+        <command_interface name="position">
+          <param name="min">-0.05</param>
+          <param name="max">0.0</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+
+      <joint name="laser_scan_model_link_joint">
+        <command_interface name="velocity">
+          <param name="min">0.0</param>
+          <param name="max">2.0</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+    </ros2_control>
+
+    <gazebo>
+      <plugin filename="gz_ros2_control-system"
+              name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>$(find my_box_bot_description)/config/controller_position.yaml</parameters>
+      </plugin>
+    </gazebo>
+
+    <!-- GPU lidar sensor, publishing on /scan -->
+    <gazebo reference="laser_scan_frame">
+      <sensor type="gpu_lidar" name="gpu_lidar">
+        <pose relative_to='laser_scan_frame'>0 0 0 0 0 0</pose>
+        <gz_frame_id>laser_scan_frame</gz_frame_id>
+        <always_on>1</always_on>
+        <visualize>true</visualize>
+        <update_rate>100</update_rate>
+        <topic>scan</topic>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>200</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14</min_angle>
+              <max_angle>3.14</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.1</min>
+            <max>5.0</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+      </sensor>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>
