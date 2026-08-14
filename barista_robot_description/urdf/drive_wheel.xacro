@@ -18,7 +18,7 @@
       <collision>
         <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
         <geometry>
-          <cylinder length="0.001" radius="0.035"/>
+          <cylinder length="0.03" radius="0.035"/>
         </geometry>
       </collision>
 
@@ -29,7 +29,6 @@
       </inertial>
     </link>
 
-    <!--
     <gazebo reference="${prefix}_wheel">
       <collision>
         <surface>
@@ -48,7 +47,6 @@
         </surface>
       </collision>
     </gazebo>
-    -->
 
     <joint name="joint_${prefix}_wheel" type="continuous">
       <origin rpy="0 0 0" xyz="0 ${y_offset} 0"/>

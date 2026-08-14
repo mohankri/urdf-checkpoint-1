@@ -4,6 +4,7 @@
 <xacro:arg name="include_laser" default="true" />
 <xacro:arg name="robot_name" default="barista" />
 <xacro:arg name="use_controllers" default="false" />
+<xacro:property name="robot_name" value="$(arg robot_name)"/>
 
 <xacro:include filename="$(find barista_robot_description)/urdf/caster_wheel.xacro" />
 <xacro:include filename="$(find barista_robot_description)/urdf/cup_holder_tray.xacro" />
@@ -104,7 +105,7 @@
             name="gz::sim::systems::DiffDrive">
         <left_joint>joint_left_wheel</left_joint>
         <right_joint>joint_right_wheel</right_joint>
-        <wheel_separation>0.1</wheel_separation>
+        <wheel_separation>0.29</wheel_separation>
         <wheel_radius>0.035</wheel_radius>
         <topic>/$(arg robot_name)/cmd_vel</topic>
         <publish_odom>true</publish_odom>
@@ -112,8 +113,8 @@
         <publish_wheel_tf>true</publish_wheel_tf>
         <odom_topic>/$(arg robot_name)/odom</odom_topic>
         <tf_topic>/$(arg robot_name)/tf</tf_topic>
-        <frame_id>$(arg robot_name)/odom</frame_id>
-        <child_frame_id>$(arg robot_name)/base_link</child_frame_id>
+        <frame_id>/$(arg robot_name)/odom</frame_id>
+        <child_frame_id>/$(arg robot_name)/base_link</child_frame_id>
     </plugin>
 </gazebo>
 
