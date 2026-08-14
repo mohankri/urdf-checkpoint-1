@@ -10,7 +10,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry><cylinder length="0.090" radius="0.160"/></geometry>
-        <material name="blue"/>
+        <material name="$(arg robot_color)"/>
       </visual>
       <!--
       <collision>
