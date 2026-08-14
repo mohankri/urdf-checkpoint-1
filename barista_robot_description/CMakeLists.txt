@@ -29,7 +29,6 @@ DIRECTORY
 	rviz
     launch
 	worlds
-	config
 	meshes
 DESTINATION
     share/${PROJECT_NAME}/

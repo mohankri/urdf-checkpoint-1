@@ -91,6 +91,10 @@
         <joint_name>back_roll_joint</joint_name>
         <joint_name>front_pitch_joint</joint_name>
         <joint_name>back_pitch_joint</joint_name>
+        <xacro:if value="$(arg include_laser)">
+            <joint_name>laser_scan_link_joint</joint_name>
+            <joint_name>laser_scan_model_link_joint</joint_name>
+        </xacro:if>
     </plugin>
 </gazebo>
 

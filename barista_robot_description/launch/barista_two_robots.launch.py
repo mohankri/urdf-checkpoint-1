@@ -17,8 +17,8 @@ PACKAGE_NAME = "barista_robot_description"
 
 # name, chassis color (must exist as a <material> in the xacro), spawn pose
 ROBOTS = [
-    {"name": "rick",  "color": "red",  "x": 0.0, "y": 0.0, "yaw": 0.0},
-    {"name": "morty", "color": "blue", "x": 0.0, "y": 1.5, "yaw": 0.0},
+	{"name": "rick",  "color": "red",  "x": 0.0, "y": 0.0, "yaw": 0.0},
+	{"name": "morty", "color": "blue", "x": 0.0, "y": 1.5, "yaw": 0.0},
 ]
 
 
@@ -34,6 +34,7 @@ def robot_actions(pkg_share, robot, include_laser_value):
             "include_laser": include_laser_value,
             "robot_name": name,
             "robot_color": robot["color"],
+            "use_ros2_control": "false",
         },
     )
     params = {
@@ -104,20 +105,12 @@ def robot_actions(pkg_share, robot, include_laser_value):
         output="screen",
     )
 
-    # Controller spawners target this robot's namespaced controller_manager
-    # (created by the gz_ros2_control plugin with <namespace>/{name}>).
-    # --param-file is passed explicitly to each spawner to work around a
-    # ROS 2 Jazzy bug (ros2_control#2309 / gz_ros2_control#512) where the
-    # controller manager forwards a bare `--params-file` with no path to
-    # controller nodes, crashing them with an RCLInvalidROSArgsError.
-    # controller_manager = f"/{name}/controller_manager"
-
-    spawn_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_state_broadcaster"],
-        output="screen",
-    )
+    #spawn_controller = Node(
+    #    package="controller_manager",
+    #    executable="spawner",
+    #    arguments=["joint_state_broadcaster"],
+    #    output="screen",
+    #)
 
     actions = [robot_state_publisher, spawn_entity, gz_bridge, static_tf]
    # if include_laser_value.lower() in ("true", "1"):
@@ -165,7 +158,7 @@ def launch_setup(context, *args, **kwargs):
         actions += robot_actions(pkg_share, robot, include_laser_value)
 
     if use_rviz_value.lower() in ("true", "1"):
-        rviz_config_dir = os.path.join(pkg_share, "rviz", "urdf_vis.rviz")
+        rviz_config_dir = os.path.join(pkg_share, "rviz", "two_robots.rviz")
         actions.append(Node(
             package="rviz2",
             executable="rviz2",
