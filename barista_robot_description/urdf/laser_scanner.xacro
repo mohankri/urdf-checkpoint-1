@@ -5,7 +5,7 @@
        sensor frame, and a continuously-spinning visual/collision model on
        top. Includes the ros2_control hardware interface for both actuated
        joints and the gz gpu_lidar sensor plugin publishing on /scan. -->
-  <xacro:macro name="laser_scanner" params="parent">
+  <xacro:macro name="laser_scanner" params="parent robot_name:=barista use_ros2_control:=false">
 
     <link name="laser_scan_link">
       <visual>
@@ -109,7 +109,14 @@
     <gazebo>
       <plugin filename="gz_ros2_control-system"
               name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters>$(find my_box_bot_description)/config/controller_position.yaml</parameters>
+        <ros>
+          <namespace>/${robot_name}</namespace>
+          <!-- Some gz_ros2_control versions subscribe to the absolute
+               /robot_description topic even when namespaced; remap both
+               forms so each controller_manager gets its own robot. -->
+          <remapping>/robot_description:=/${robot_name}/robot_description</remapping>
+          <remapping>robot_description:=/${robot_name}/robot_description</remapping>
+        </ros>
       </plugin>
     </gazebo>
 
@@ -117,11 +124,11 @@
     <gazebo reference="laser_scan_frame">
       <sensor type="gpu_lidar" name="gpu_lidar">
         <pose relative_to='laser_scan_frame'>0 0 0 0 0 0</pose>
-        <gz_frame_id>laser_scan_frame</gz_frame_id>
+        <gz_frame_id>${robot_name}/laser_scan_frame</gz_frame_id>
         <always_on>1</always_on>
         <visualize>true</visualize>
         <update_rate>100</update_rate>
-        <topic>scan</topic>
+        <topic>/${robot_name}/scan</topic>
         <ray>
           <scan>
             <horizontal>

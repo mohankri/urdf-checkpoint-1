@@ -2,6 +2,8 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_box_bot">
  
 <xacro:arg name="include_laser" default="true" />
+<xacro:arg name="robot_name" default="barista" />
+<xacro:arg name="use_controllers" default="false" />
 
 <xacro:include filename="$(find barista_robot_description)/urdf/caster_wheel.xacro" />
 <xacro:include filename="$(find barista_robot_description)/urdf/cup_holder_tray.xacro" />
@@ -35,7 +37,7 @@
         <geometry>
             <cylinder length="0.155" radius="0.178"/>
         </geometry>
-        <material name="blue"/>
+        <material name="$(arg robot_color)"/>
     </visual>
 
     <collision>
@@ -67,7 +69,7 @@
 <xacro:cup_holder_tray parent="base_link"/>
 
 <xacro:if value="$(arg include_laser)">
-    <xacro:laser_scanner parent="chassis"/>
+    <xacro:laser_scanner parent="chassis" robot_name="$(arg robot_name)"/>
 </xacro:if>
 
 
@@ -79,7 +81,7 @@
 <gazebo>
     <plugin filename="gz-sim-joint-state-publisher-system"
             name="gz::sim::systems::JointStatePublisher">
-        <topic>/joint_states</topic>
+        <topic>/$(arg robot_name)/joint_states</topic>
         <update_rate>30</update_rate>
         <joint_name>joint_left_wheel</joint_name>
         <joint_name>joint_right_wheel</joint_name>
@@ -89,6 +91,10 @@
         <joint_name>back_roll_joint</joint_name>
         <joint_name>front_pitch_joint</joint_name>
         <joint_name>back_pitch_joint</joint_name>
+        <xacro:if value="$(arg include_laser)">
+            <joint_name>laser_scan_link_joint</joint_name>
+            <joint_name>laser_scan_model_link_joint</joint_name>
+        </xacro:if>
     </plugin>
 </gazebo>
 
@@ -100,22 +106,24 @@
         <right_joint>joint_right_wheel</right_joint>
         <wheel_separation>0.1</wheel_separation>
         <wheel_radius>0.035</wheel_radius>
-        <topic>cmd_vel</topic>
+        <topic>/$(arg robot_name)/cmd_vel</topic>
         <publish_odom>true</publish_odom>
         <publish_odom_tf>true</publish_odom_tf>
         <publish_wheel_tf>true</publish_wheel_tf>
-        <odom_topic>odom</odom_topic>
-        <tf_topic>tf</tf_topic>
-        <frame_id>odom</frame_id>
-        <child_frame_id>base_link</child_frame_id>
+        <odom_topic>/$(arg robot_name)/odom</odom_topic>
+        <tf_topic>/$(arg robot_name)/tf</tf_topic>
+        <frame_id>$(arg robot_name)/odom</frame_id>
+        <child_frame_id>$(arg robot_name)/base_link</child_frame_id>
     </plugin>
 </gazebo>
 
 <!-- Enable Sensors in Gazebo Sim -->
+<!--
 <gazebo>
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
         <render_engine>ogre2</render_engine>
     </plugin>
 </gazebo>
+-->
 
 </robot>
