@@ -3,7 +3,7 @@
  
 <xacro:arg name="include_laser" default="true" />
 <xacro:arg name="robot_name" default="barista" />
-<xacro:arg name="use_controllers" default="false" />
+<xacro:arg name="robot_color" default="blue" />
 <xacro:property name="robot_name" value="$(arg robot_name)"/>
 
 <xacro:include filename="$(find barista_robot_description)/urdf/caster_wheel.xacro" />
@@ -42,15 +42,16 @@
     </visual>
 
     <collision>
+        <origin xyz="0 0 0.0775" rpy="0 0 0"/>
         <geometry>
-            <box size="0.1 0.1 0.1"/>
+            <cylinder length="0.155" radius="0.178"/>
         </geometry>
     </collision>
 
     <inertial>
         <mass value="0.5"/>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <inertia ixx="0.0008333333333333335" ixy="0" ixz="0" iyy="0.0008333333333333335" iyz="0" izz="0.0008333333333333335"/>
+        <origin rpy="0 0 0" xyz="0 0 0.0775"/>
+        <inertia ixx="0.00496" ixy="0" ixz="0" iyy="0.00496" iyz="0" izz="0.00792"/>
     </inertial>
 </link>
 
@@ -70,7 +71,7 @@
 <xacro:cup_holder_tray parent="base_link"/>
 
 <xacro:if value="$(arg include_laser)">
-    <xacro:laser_scanner parent="chassis" robot_name="$(arg robot_name)"/>
+    <xacro:laser_scanner parent="chassis" robot_name="${robot_name}"/>
 </xacro:if>
 
 
@@ -82,7 +83,7 @@
 <gazebo>
     <plugin filename="gz-sim-joint-state-publisher-system"
             name="gz::sim::systems::JointStatePublisher">
-        <topic>/$(arg robot_name)/joint_states</topic>
+        <topic>/${robot_name}/joint_states</topic>
         <update_rate>30</update_rate>
         <joint_name>joint_left_wheel</joint_name>
         <joint_name>joint_right_wheel</joint_name>
@@ -107,14 +108,14 @@
         <right_joint>joint_right_wheel</right_joint>
         <wheel_separation>0.29</wheel_separation>
         <wheel_radius>0.035</wheel_radius>
-        <topic>/$(arg robot_name)/cmd_vel</topic>
+        <topic>/${robot_name}/cmd_vel</topic>
         <publish_odom>true</publish_odom>
         <publish_odom_tf>true</publish_odom_tf>
         <publish_wheel_tf>true</publish_wheel_tf>
-        <odom_topic>/$(arg robot_name)/odom</odom_topic>
-        <tf_topic>/$(arg robot_name)/tf</tf_topic>
-        <frame_id>/$(arg robot_name)/odom</frame_id>
-        <child_frame_id>/$(arg robot_name)/base_link</child_frame_id>
+        <odom_topic>/${robot_name}/odom</odom_topic>
+        <tf_topic>/${robot_name}/tf</tf_topic>
+        <frame_id>${robot_name}/odom</frame_id>
+        <child_frame_id>${robot_name}/base_link</child_frame_id>
     </plugin>
 </gazebo>
 
