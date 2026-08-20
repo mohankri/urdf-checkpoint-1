@@ -182,7 +182,10 @@
 </link>
 
   <joint name="front_yaw_joint" type="continuous">
-        <origin rpy="0 0 0" xyz="0.178 0 0"/>
+      <!--  <origin rpy="0 0 0" xyz="0.178 0 0"/> 
+                  <cylinder length="0.155" radius="0.178"/> -->
+
+        <origin rpy="0 0 0" xyz="0.1428 0 0"/> 
         <axis xyz="0 0 1"/>
         <parent link="chassis"/>
         <child link="front_yaw"/>
@@ -307,7 +310,7 @@
 
 
     <joint name="back_yaw_joint" type="continuous">
-        <origin rpy="0 0 0" xyz="-0.178 0 0"/>
+        <origin rpy="0 0 0" xyz="-0.1428 0 0"/>
         <axis xyz="0 0 1"/>
         <parent link="chassis"/>
         <child link="back_yaw"/>
@@ -540,10 +543,10 @@
         </inertial>
     </link>
 
-                <cylinder length="0.155" radius="0.178"/>
+              <!-- <cylinder length="0.155" radius="0.178"/> -->
 
   <joint name="laser_scan_link_joint" type="prismatic">
-    <origin rpy="0 0 0" xyz="0.160 0 0.155"/>
+    <origin rpy="0 0 0" xyz="0.1428 0 0.155"/>
     <parent link="chassis"/>
     <child link="laser_scan_link"/>
     <axis xyz="0 0 1"/>
