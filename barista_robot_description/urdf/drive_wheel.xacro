@@ -4,7 +4,7 @@
   <!-- Single drive wheel, continuous joint rotating about Y, mounted to
        `parent` at y = y_offset (e.g. left: 0.145, right: -0.145).
        Material "red" must already be defined in the including file. -->
-  <xacro:macro name="drive_wheel" params="prefix parent y_offset">
+  <xacro:macro name="drive_wheel" params="prefix parent y_offset color">
 
     <link name="${prefix}_wheel">
       <visual>
@@ -12,13 +12,13 @@
         <geometry>
           <cylinder length="0.0206" radius="0.0352"/>
         </geometry>
-        <material name="red"/>
+        <material name="${color}"/>
       </visual>
 
       <collision>
         <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
         <geometry>
-          <cylinder length="0.001" radius="0.035"/>
+          <cylinder length="0.03" radius="0.035"/>
         </geometry>
       </collision>
 
@@ -29,7 +29,6 @@
       </inertial>
     </link>
 
-    <!--
     <gazebo reference="${prefix}_wheel">
       <collision>
         <surface>
@@ -48,7 +47,6 @@
         </surface>
       </collision>
     </gazebo>
-    -->
 
     <joint name="joint_${prefix}_wheel" type="continuous">
       <origin rpy="0 0 0" xyz="0 ${y_offset} 0"/>

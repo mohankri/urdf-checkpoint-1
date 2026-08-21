@@ -668,12 +668,6 @@
    <gazebo>
     <plugin filename="gz_ros2_control-system"
             name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-
-        <!-- Controller configuration YAML file -->
-        <parameters>$(find my_box_bot_description)/config/controller_position.yaml</parameters>
-        <!--
-        <parameters>$(find barista_robot_description)/config/controller_position.yaml</parameters>
-        -->
     </plugin>
    </gazebo>
 
