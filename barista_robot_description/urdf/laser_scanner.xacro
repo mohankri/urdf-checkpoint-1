@@ -30,7 +30,7 @@
     </link>
 
     <joint name="laser_scan_link_joint" type="prismatic">
-      <origin rpy="0 0 0" xyz="0.160 0 0.155"/>
+      <origin rpy="0 0 0" xyz="0.140 0 0.155"/>
       <parent link="${parent}"/>
       <child link="laser_scan_link"/>
       <axis xyz="0 0 1"/>

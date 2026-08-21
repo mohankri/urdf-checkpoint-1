@@ -69,8 +69,8 @@
 <xacro:drive_wheel prefix="left" parent="chassis" y_offset="0.145" color="white"/>
 <xacro:drive_wheel prefix="right" parent="chassis" y_offset="-0.145" color="white"/>
 
-<xacro:caster_wheel prefix="front" parent="chassis" x_offset="0.178"/>
-<xacro:caster_wheel prefix="back"  parent="chassis" x_offset="-0.178"/>
+<xacro:caster_wheel prefix="front" parent="chassis" x_offset="0.143"/>
+<xacro:caster_wheel prefix="back"  parent="chassis" x_offset="-0.143"/>
 <xacro:cup_holder_tray parent="base_link"/>
 
 <xacro:if value="$(arg include_laser)">
