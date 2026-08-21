@@ -1,0 +1,62 @@
+diff --git a/barista_robot_description/urdf/barista_robot_model.urdf.xacro b/barista_robot_description/urdf/barista_robot_model.urdf.xacro
+index 80122e7..1b3d9d5 100644
+--- a/barista_robot_description/urdf/barista_robot_model.urdf.xacro
++++ b/barista_robot_description/urdf/barista_robot_model.urdf.xacro
+@@ -69,8 +69,8 @@
+ <xacro:drive_wheel prefix="left" parent="chassis" y_offset="0.145" color="white"/>
+ <xacro:drive_wheel prefix="right" parent="chassis" y_offset="-0.145" color="white"/>
+ 
+-<xacro:caster_wheel prefix="front" parent="chassis" x_offset="0.178"/>
+-<xacro:caster_wheel prefix="back"  parent="chassis" x_offset="-0.178"/>
++<xacro:caster_wheel prefix="front" parent="chassis" x_offset="0.143"/>
++<xacro:caster_wheel prefix="back"  parent="chassis" x_offset="-0.143"/>
+ <xacro:cup_holder_tray parent="base_link"/>
+ 
+ <xacro:if value="$(arg include_laser)">
+diff --git a/barista_robot_description/urdf/caster_wheel.xacro b/barista_robot_description/urdf/caster_wheel.xacro
+index b05494d..c97f1a3 100644
+--- a/barista_robot_description/urdf/caster_wheel.xacro
++++ b/barista_robot_description/urdf/caster_wheel.xacro
+@@ -81,18 +81,18 @@
+         <material name="green_dark"/>
+       </visual>
+ 
+-      <collision>
+-        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+-        <geometry>
+-          <sphere radius="0.010"/>
+-        </geometry>
+-      </collision>
++        <collision>
++            <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
++            <geometry>
++                <sphere radius="0.0352"/>    <!-- was 0.010 — the tilt bug -->
++            </geometry>
++        </collision>
+ 
+-      <inertial>
+-        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+-        <mass value="0.001"/>
+-        <inertia ixx="4e-08" ixy="0" ixz="0" iyy="4e-08" iyz="0" izz="4e-08"/>
+-      </inertial>
++        <inertial>
++            <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
++            <mass value="0.001"/>
++            <inertia ixx="4e-08" ixy="0" ixz="0" iyy="4e-08" iyz="0" izz="4e-08"/>
++        </inertial>
+     </link>
+ 
+     <joint name="${prefix}_pitch_joint" type="continuous">
+diff --git a/barista_robot_description/urdf/laser_scanner.xacro b/barista_robot_description/urdf/laser_scanner.xacro
+index 3aefd52..8a3c8a7 100644
+--- a/barista_robot_description/urdf/laser_scanner.xacro
++++ b/barista_robot_description/urdf/laser_scanner.xacro
+@@ -30,7 +30,7 @@
+     </link>
+ 
+     <joint name="laser_scan_link_joint" type="prismatic">
+-      <origin rpy="0 0 0" xyz="0.160 0 0.155"/>
++      <origin rpy="0 0 0" xyz="0.140 0 0.155"/>
+       <parent link="${parent}"/>
+       <child link="laser_scan_link"/>
+       <axis xyz="0 0 1"/>
